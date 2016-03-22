@@ -1,0 +1,81 @@
+$def with (content)
+
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    $if content.has_key('title'):
+      <title>$content.title</title>
+    $else:
+      <title>Cert Generator</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="Openssl, certificate, self-signed, ca, server, client">
+    <meta name="description" content="Generate self-signed ca and server certificates" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/mystyle.css">
+    <script src="//cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-extra">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand narrow-display" href="/">CertGen</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <a class="navbar-brand" href="/">CertGen</a>
+          <ul class="nav navbar-nav">
+            <li id="certGen">
+              <a href="/certGen"><font color="orange">Certificates Generator</font></a>
+            </li>
+              
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                Todo
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Todo</a></li>
+                  
+                <li><a href="#">Todo</a></li>
+                  
+                <li><a href="#">Todo</a></li>
+              </ul>
+            </li>
+          </ul>
+            
+          <!--<div class="navbar-form navbar-right">
+            <a class="btn btn-primary" href="/accounts/signup">Sign up</a>
+            <a class="btn btn-default" href="/accounts/login/">Sign in</a>
+          </div>-->
+          
+          <!--
+          <form class="navbar-form pull-right">
+            <input class="col-md-2" type="text" placeholder="Email">
+            <input class="col-md-2" type="password" placeholder="Password">
+            <button type="submit" class="btn">Sign in</button>
+          </form>
+          -->
+        </div><!--/.navbar-collapse -->  
+      </div> <!--container-->
+    </div> <!--/navbar-->
+
+    $:content
+    
+  <div class="container">
+    <hr>
+  </div>
+
+  <footer>
+    <p class="text-center">Copyright © 2016 Feng</p>
+  </footer>
+  
+  <script>\$("#defaultCert").click(function(){\$("#makeCerts").click()})</script>
+  </body>
+</html>

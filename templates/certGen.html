@@ -1,0 +1,744 @@
+$def with (title, ccList)
+$var title: $title
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="certgen-title">
+        <h3 class="inline-title">Self-signed Certificate Generator</h3>
+        <div class="pull-right">
+          <button class="btn btn-default active">Customized Your Certs</button>
+          <button class="btn btn-success" id="defaultCert">
+            <i class="fa fa-cogs"></i>
+            <small>Pick one suite of self-signed certificates!</small>
+          </button>
+        </div>
+      </div><!--certgen title-->
+      <p></p>
+      <div class="col-md-12">
+        <form role="form" action="" method="post" id="certs">
+          <div class="form-group panel panel-info" id="caPanel">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#caPanel" 
+                    href="#collapseCA" class="certTitle">CA
+                </a>
+              </h3>
+            </div>
+            <div id="collapseCA" class="panel-collapse collapse in">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Size</span>
+                      <select class="form-control" name="ca_size">
+                        <option value="1024">1024</option>
+                        <option value="2048" selected>2048</option>
+                        <option value="4096">4096</option>
+                      </select>
+                    </div>
+                  </div><!--Size-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">MD</span>
+                      <select class="form-control" name="ca_md">
+                        <option value="md5">md5</option>
+                        <option value="sha1">sha1</option>
+                        <option value="sha256" selected>sha256</option>
+                        <option value="sha384">sha384</option>
+                        <option value="sha512">sha512</option>
+                      </select>
+                    </div>
+                  </div><!--Message digest-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Days</span>
+                      <input type="text" class="form-control" placeholder="30~3650" value="365" 
+                        name="ca_valid_days">
+                    </div>
+                  </div><!--Days-->
+
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-addon">Password</span>
+                      <input type="password" class="form-control" 
+                        placeholder="The passphrase for private key, you can leave it blank" 
+                          name="ca_private_key_passphrase">
+                    </div>
+                  </div><!--Password-->
+                </div><!--first row-->
+
+                <br />
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Distinguished Name</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="input-group">
+                          <span class="input-group-addon">Country (C)</span>
+                          <select class="form-control" name="ca_c">
+                          $for cc in ccList
+                            <option value="$cc"
+                            $if cc == 'CN':
+                              selected
+                            >$cc</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">State or Province (ST)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="ca_st">
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">Locacity (L)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="ca_l">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organization (O)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. MyStartup Inc" name="ca_o">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organizational Unit (OU)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Team In Corp" name="ca_ou">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="input-group">
+                          <span class="input-group-addon">Common Name (CN)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Certification Authority" name="ca_cn">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--DN panel-->
+
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Extensions</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="myAlert" class="alert alert-warning">
+                      <a href="#" class="close" data-dismiss="alert">&times;</a>
+                      In most cases I do not want you modify the below contents.
+                      So I disabled them.
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="hash" readOnly="true" name="ca_extensions_ski">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Authority Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="keyid:always, issuer:always" readOnly="true"
+                            name="ca_extensions_aki">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="cRLSign, keyCertSign" readOnly="true" name="ca_extensions_ku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Basic Constraints</span>
+                          <input type="text" class="form-control" 
+                            value="CA:true" readOnly="true" name="ca_extensions_bc">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--Extensions panel-->
+
+              </div><!--CA panel body-->
+            </div>
+          </div><!--CA panel-->
+
+          <div class="form-group panel panel-info" id="intemidateCAPanel">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#intemidateCAPanel" 
+                    href="#collapseIntemidateCA" class="certTitle">
+                  <span>Intermediate CA</span>
+                </a>
+                <!--<a class="pull-right action-icon">
+                  <i class="action-icon fa fa-times-circle fa-lg"></i>
+                </a>-->
+              </h3>
+            </div>
+            <div id="collapseIntemidateCA" class="panel-collapse collapse in">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Size</span>
+                      <select class="form-control" name="intermediate_ca_size">
+                        <option value="1024">1024</option>
+                        <option value="2048" selected>2048</option>
+                        <option value="4096">4096</option>
+                      </select>
+                    </div>
+                  </div><!--Size-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">MD</span>
+                      <select class="form-control" name="intermediate_ca_md">
+                        <option value="md5">md5</option>
+                        <option value="sha1">sha1</option>
+                        <option value="sha256" selected>sha256</option>
+                        <option value="sha384">sha384</option>
+                        <option value="sha512">sha512</option>
+                      </select>
+                    </div>
+                  </div><!--Message digest-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Days</span>
+                      <input type="text" class="form-control" placeholder="30~3650" value="365"
+                       name="intermediate_ca_valid_days">
+                    </div>
+                  </div><!--Days-->
+
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-addon">Password</span>
+                      <input type="password" class="form-control" 
+                        placeholder="The passphrase for private key, you can leave it blank"
+                        name="intermediate_ca_private_key_passphrase">
+                    </div>
+                  </div><!--Password-->
+                </div><!--first row-->
+
+                <br />
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Distinguished Name</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="input-group">
+                          <span class="input-group-addon">Country (C)</span>
+                          <select class="form-control" name="intermediate_ca_c">
+                          $for cc in ccList
+                            <option value="$cc"
+                            $if cc == 'CN':
+                              selected
+                            >$cc</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">State or Province (ST)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="intermediate_ca_st">
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">Locacity (L)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="intermediate_ca_l">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organization (O)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. MyStartup Inc" name="intermediate_ca_o">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organizational Unit (OU)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Team In Corp" name="intermediate_ca_ou">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="input-group">
+                          <span class="input-group-addon">Common Name (CN)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Intermediate Certification Authority"
+                            name="intermediate_ca_cn">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--DN panel-->
+
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Extensions</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="myAlert" class="alert alert-warning">
+                      <a href="#" class="close" data-dismiss="alert">&times;</a>
+                      In most cases I do not want you modify the below contents.
+                      So I disabled them.
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="hash" readOnly="true" name="intermediate_ca_extensions_ski">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Authority Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="keyid, issuer" readOnly="true" name="intermediate_ca_extensions_aki">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="digitalSignature, cRLSign, keyCertSign" readOnly="true"
+                            name="intermediate_ca_extensions_ku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Basic Constraints</span>
+                          <input type="text" class="form-control" 
+                            value="CA:true" readOnly="true" name="intermediate_ca_extensions_bc">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--Extensions panel-->
+                
+              </div><!--Intemidate CA panel body-->
+            </div>
+          </div><!--Intemidiate CA panel-->
+
+          <div class="form-group panel panel-info" id="serverPanel">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#serverPanel" 
+                    href="#collapseServer" class="certTitle">Server
+                </a>
+              </h3>
+            </div>
+            <div id="collapseServer" class="panel-collapse collapse in">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Size</span>
+                      <select class="form-control" name="server_size">
+                        <option value="1024">1024</option>
+                        <option value="2048" selected>2048</option>
+                        <option value="4096">4096</option>
+                      </select>
+                    </div>
+                  </div><!--Size-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">MD</span>
+                      <select class="form-control" name="server_md">
+                        <option value="md5">md5</option>
+                        <option value="sha1">sha1</option>
+                        <option value="sha256" selected>sha256</option>
+                        <option value="sha384">sha384</option>
+                        <option value="sha512">sha512</option>
+                      </select>
+                    </div>
+                  </div><!--Message digest-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Days</span>
+                      <input type="text" class="form-control" placeholder="30~3650" value="365"
+                      name="server_valid_days">
+                    </div>
+                  </div><!--Days-->
+
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-addon">Password</span>
+                      <input type="password" class="form-control" 
+                        placeholder="The passphrase for private key, you can leave it blank"
+                        name="server_private_key_passphrase">
+                    </div>
+                  </div><!--Password-->
+                </div><!--first row-->
+
+                <br />
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Distinguished Name</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="input-group">
+                          <span class="input-group-addon">Country (C)</span>
+                          <select class="form-control"name="server_c">
+                          $for cc in ccList
+                            <option value="$cc"
+                            $if cc == 'CN':
+                              selected
+                            >$cc</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">State or Province (ST)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="server_st">
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">Locacity (L)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="server_l">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organization (O)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. MyStartup Inc" name="server_o">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organizational Unit (OU)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Team In Corp" name="server_ou">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="input-group">
+                          <span class="input-group-addon">Common Name (CN)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. *.mystartup.com" name="server_cn">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--DN panel-->
+
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Extensions</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="myAlert" class="alert alert-warning">
+                      <a href="#" class="close" data-dismiss="alert">&times;</a>
+                      In most cases I do not want you modify the below contents.
+                      So I disabled them.
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="hash" readOnly="true" name="server_extensions_ski">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Authority Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="keyid, issuer" readOnly="true" name="server_extensions_aki">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="digitalSignature, keyEncipherment" readOnly="true"
+                            name="server_extensions_ku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Basic Constraints</span>
+                          <input type="text" class="form-control" 
+                            value="CA:false" readOnly="true" name="server_extensions_bc">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Extended Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="serverAuth" readOnly="true" name="server_extensions_eku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Alt Name</span>
+                          <input type="text" class="form-control" 
+                            value="DNS.0:*.mystartup.com, DNS.1:mystartup.com" readOnly="true"
+                            name="server_extensions_san">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div><!--Extensions panel-->
+
+              </div><!--Server panel body-->
+            </div>
+          </div><!--Server panel-->
+
+          <div class="form-group panel panel-info" id="clientPanel">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <a data-toggle="collapse" data-parent="#clientPanel" 
+                    href="#collapseClient" class="certTitle">Client
+                </a>
+              </h3>
+            </div>
+            <div id="collapseClient" class="panel-collapse collapse in">
+              <div class="panel-body">
+
+                <div class="row">
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Size</span>
+                      <select class="form-control" name="client_size">
+                        <option value="1024">1024</option>
+                        <option value="2048" selected>2048</option>
+                        <option value="4096">4096</option>
+                      </select>
+                    </div>
+                  </div><!--Size-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">MD</span>
+                      <select class="form-control" name="client_md">
+                        <option value="md5">md5</option>
+                        <option value="sha1">sha1</option>
+                        <option value="sha256" selected>sha256</option>
+                        <option value="sha384">sha384</option>
+                        <option value="sha512">sha512</option>
+                      </select>
+                    </div>
+                  </div><!--Message digest-->
+
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <span class="input-group-addon">Days</span>
+                      <input type="text" class="form-control" placeholder="30~3650" value="365"
+                      name="client_valid_days">
+                    </div>
+                  </div><!--Days-->
+
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-addon">Password</span>
+                      <input type="password" class="form-control" 
+                        placeholder="The passphrase for private key, you can leave it blank"
+                        name="client_private_key_passphrase">
+                    </div>
+                  </div><!--Password-->
+                </div><!--first row-->
+
+                <br />
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Distinguished Name</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="input-group">
+                          <span class="input-group-addon">Country (C)</span>
+                          <select class="form-control" name="client_c">
+                          $for cc in ccList
+                            <option value="$cc"
+                            $if cc == 'CN':
+                              selected
+                            >$cc</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">State or Province (ST)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="client_st">
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">Locacity (L)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. Beijing" name="client_l">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organization (O)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. MyStartup Inc" name="client_o">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Organizational Unit (OU)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Team In Corp" name="client_ou">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="input-group">
+                          <span class="input-group-addon">Common Name (CN)</span>
+                          <input type="text" class="form-control" 
+                            placeholder="e.g. My Client Cert" name="client_cn">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div><!--DN panel-->
+
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Extensions</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="myAlert" class="alert alert-warning">
+                      <a href="#" class="close" data-dismiss="alert">&times;</a>
+                      In most cases I do not want you modify the below contents.
+                      So I disabled them.
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="hash" readOnly="true" name="client_extensions_ski">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Authority Key Identifier</span>
+                          <input type="text" class="form-control" 
+                            value="keyid, issuer" readOnly="true" name="client_extensions_aki">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="digitalSignature, keyEncipherment" readOnly="true"
+                            name="client_extensions_ku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Basic Constraints</span>
+                          <input type="text" class="form-control" 
+                            value="CA:false" readOnly="true" name="client_extensions_bc">
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Extended Key Usage</span>
+                          <input type="text" class="form-control" 
+                            value="clientAuth" readOnly="true" name="client_extensions_eku">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="input-group">
+                          <span class="input-group-addon">Subject Alt Name</span>
+                          <input type="text" class="form-control" 
+                            value="email:copy,email:owner@mystartup.com" readOnly="true"
+                            name="client_extensions_san">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div><!--Extensions panel-->
+
+              </div><!--Client panel body-->
+            </div>
+          </div><!--Client panel-->
+          <hr>
+          <button class="pull-right btn btn-info btn-lg" id="makeCerts"><i class="fa fa-cog"></i> Make!</button>
+        </form>
+      </div><!--Certficate Generator block-->
+    </div>
+  </div>
+</div>
